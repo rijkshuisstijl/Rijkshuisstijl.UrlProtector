@@ -1,4 +1,0 @@
-Rijkshuisstijl.UrlProtector
-===========================
-
-Rijkshuisstijl.UrlProtector

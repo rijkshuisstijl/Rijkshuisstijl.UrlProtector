@@ -1,0 +1,176 @@
+﻿@using Rijkshuisstijl.UrlProtector.Models
+@model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.ShowViewModel
+
+@{
+    Style.Include("urlprotector");
+    Layout.Title = T("Protected url filters");
+}
+
+<div id="urlprotector">      
+
+    @{
+
+        <table>
+            <tr>
+                <th>
+                    @T("Url pattern")                
+                </th>
+                <th>
+                    @T("Host address pattern")
+                </th>
+                <th>
+                    @T("User agent pattern")
+                </th>
+                <th>
+                    @T("Description")
+                </th>
+                <th>
+                    @T("Force SSL")
+                </th>
+                <th>
+                    @T("Result code")
+                </th>
+                <th>
+                    @T("Action")
+                </th>
+            </tr>
+            @foreach (DashboardFilterRecord dashboardFilterRecord in Model.DashboardFilterRecords) {
+                <tr>
+                    <td>
+                        @T("Dashboard")
+                    </td>
+                    <td>
+                        @{string userHostAddressmatch = Model.MatchedUserHostAddressPatterns.Contains(dashboardFilterRecord.UserHostAddressPattern) ? "matched" : "nomatch";
+                            <span class="@userHostAddressmatch">@dashboardFilterRecord.UserHostAddressPattern</span>}
+                    </td>
+                    <td>
+                        @{string userAgentmatch = Model.MatchedUserAgentPatterns.Contains(dashboardFilterRecord.UserAgentPattern) ? "matched" : "nomatch";
+                            <span class="@userAgentmatch">@dashboardFilterRecord.UserAgentPattern</span>}
+                    </td>
+                    <td>
+                        Dashboard and authorisation protection
+                    </td>
+                    <td class="forcesslcolumn">
+                        @{
+                            if (dashboardFilterRecord.ForceSsl) {
+                                <text>SSL</text>
+                            }
+                            else {
+                                <text>-</text>
+                            }
+                        }
+                    </td>
+                    <td class="resultcodecolumn">
+                        @{
+                            if (dashboardFilterRecord.ReturnStatusNotFound) {
+                                <text>404 Not Found</text>
+                            }
+                            else {
+                                <text>403 Access Denied</text>
+                            }
+                        }
+                    </td>
+                    <td class="actioncolumn">
+                        @Html.ActionLink(T("Edit").Text, "EditDashboard", "UrlProtector", new {area = "Rijkshuisstijl.UrlProtector"}, null)
+                    </td>
+                </tr>
+            }
+            @foreach (UrlFilterRecord urlFilter in Model.UrlFilterRecords.OrderBy(r => r.UrlPriority)) {
+                <tr>
+                    <td>
+                        @urlFilter.UrlPattern
+                    </td>
+                    <td>
+                        @{string userHostAddressmatch = Model.MatchedUserHostAddressPatterns.Contains(urlFilter.UserHostAddressPattern) ? "matched" : "nomatch";
+                            <span class="@userHostAddressmatch">@urlFilter.UserHostAddressPattern</span>}
+                    </td>
+                    <td>
+                        @{string userAgentmatch = Model.MatchedUserAgentPatterns.Contains(urlFilter.UserAgentPattern) ? "matched" : "nomatch";
+                            <span class="@userAgentmatch">@urlFilter.UserAgentPattern</span>}
+                    </td>
+                    <td>
+                        @urlFilter.Description
+                    </td>
+                    <td class="forcesslcolumn">
+                        @{
+                            if (urlFilter.ForceSsl) {
+                                <text>SSL</text>
+                            }
+                            else {
+                                <text>-</text>
+                            }
+                        }
+                    </td>
+                    <td class="resultcodecolumn">
+                        @{
+                            if (urlFilter.ReturnStatusNotFound) {
+                                <text>404 Not Found</text>
+                            }
+                            else {
+                                <text>403 Access Denied</text>
+                            }
+                        }
+                    </td>
+                    <td class="actioncolumn">
+                        @Html.ActionLink(T("Edit").Text, "Edit", "UrlProtector", new {area = "Rijkshuisstijl.UrlProtector", urlFilterId = urlFilter.Id}, null) |
+                        @Html.ActionLink(T("Delete").Text, "Delete", "UrlProtector", new {area = "Rijkshuisstijl.UrlProtector", urlFilterId = urlFilter.Id}, null)
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    @using (Html.BeginFormAntiForgeryPost("NewFilter")) {
+        <div>
+            <button class="primaryAction" type="submit">@T("New filter")</button>
+        </div>
+    }
+    
+    <h2>Most recent filtered requests</h2>
+    @{
+        if (Model.FilteredRequestRecords == null || !Model.FilteredRequestRecords.Any()) {
+            <text>@T("No requests are filtered yet.")</text>
+        }
+        else {
+            <table>
+                <tr>
+                    <th>
+                        @T("Request time")
+                    </th>
+                    <th>
+                        @T("Url")
+                    </th>
+                    <th>
+                        @T("User Host Address")
+                    </th>
+                    <th>
+                        @T("User Agent")
+                    </th>
+                </tr>
+                @foreach (FilteredRequestRecord filteredRequest in Model.FilteredRequestRecords.OrderByDescending(r => r.RequestTime)) {
+                    <tr>
+                        <td>
+                            @filteredRequest.RequestTime
+                        </td>
+                        <td>
+                            @filteredRequest.Url
+                        </td>
+                        <td>
+                            @filteredRequest.UserHostAddress
+                        </td>
+                        <td>
+                            @filteredRequest.UserAgent
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+
+        <!-- Show some info of the current user to see what is supplied to the webserver -->
+        <table id="userinfo">
+            <tr>
+                <td>@T("Current user host address:")</td><td>@Model.CurrentUserHostAddress</td>
+                <td class="currentagent">@T("Current user agent:")</td><td>@Model.CurrentUserAgent</td>
+            </tr>
+        </table>
+    }
+</div>

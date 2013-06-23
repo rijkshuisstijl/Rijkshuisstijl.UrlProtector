@@ -1,0 +1,42 @@
+﻿@model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.EditUrlViewModel
+@{
+    Style.Include("urlprotector");
+    Layout.Title = T("Edit Url filter");
+}
+<div id="urlprotector">
+     
+    <div class="errormessages">
+        @Html.ValidationSummary()
+    </div>
+
+    @using (Html.BeginFormAntiForgeryPost("Edit")) {
+        @Html.HiddenFor(m => m.UrlFilterRecord.Id)
+
+        @Html.Label(T("Regex expression of the url to validate, ex '^/subject1'").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.UrlFilterRecord.UrlPattern, new {@class = "textMedium"})
+       
+        @Html.Label(T("Priority of url pattern, only the highest priority match will be used (1=highest)").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.UrlFilterRecord.UrlPriority, new {@class = "textMedium"})
+
+        @Html.Label(T(@"Regex expression of accepted userhostaddress, ex '(^<ip address>$|^<ip address>$)'").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.UrlFilterRecord.UserHostAddressPattern, new {@class = "textMedium"})
+
+        @Html.Label(T("Regex expression of accepted useragent, ex 'my value'").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.UrlFilterRecord.UserAgentPattern, new {@class = "textMedium"})
+        
+        @Html.Label(T("Force SSL").Text, new {@class = "editor-label"})
+        @Html.CheckBoxFor(m => m.UrlFilterRecord.ForceSsl)
+
+        @Html.Label(T("Return http statuscode '404, not found' instead of '403, access denied'").Text, new {@class = "editor-label"})
+        @Html.CheckBoxFor(m => m.UrlFilterRecord.ReturnStatusNotFound)
+
+        @Html.Label(T("Description").Text, new {@class = "editor-label"})
+        @Html.TextAreaFor(m => m.UrlFilterRecord.Description, new {@class = "textMedium"})
+
+
+        <fieldset>
+            <legend></legend>
+            <button class="primaryAction" type="submit">@T("Save")</button>
+        </fieldset>
+    }
+</div>

@@ -1,0 +1,34 @@
+﻿@model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.EditDashboardViewModel
+@{
+    Style.Include("urlprotector");
+    Layout.Title = T("Edit Dashboard filter");
+}
+<div id="urlprotector">
+     
+    <div class="errormessages">
+        @Html.ValidationSummary()
+    </div>
+
+    @using (Html.BeginFormAntiForgeryPost("EditDashboard")) {
+        @Html.HiddenFor(m => m.DashboardFilterRecord.Id)
+
+        @Html.Label(T(@"Regex expression of accepted user host address, ex '(^<ip address>$|^<ip address>$)'").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.DashboardFilterRecord.UserHostAddressPattern, new {@class = "textMedium"})
+
+        @Html.Label(T("Regex expression of accepted user agent, ex 'my value'").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.DashboardFilterRecord.UserAgentPattern, new {@class = "textMedium"})
+
+        @Html.Label(T("Force SSL").Text, new {@class = "editor-label"})
+        @Html.CheckBoxFor(m => m.DashboardFilterRecord.ForceSsl)
+        
+        @Html.Label(T("Return http statuscode '404, not found' instead of '403, access denied'").Text, new {@class = "editor-label"})
+        @Html.CheckBoxFor(m => m.DashboardFilterRecord.ReturnStatusNotFound)
+
+        
+        
+        <fieldset>
+            <legend></legend>
+            <button class="primaryAction" type="submit">@T("Save")</button>
+        </fieldset>
+    }
+</div>

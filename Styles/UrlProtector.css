@@ -1,0 +1,76 @@
+﻿
+#urlprotector .editor-label {
+    padding-top: 10px;
+    font-size: small;
+}
+
+#urlprotector .matchcheck {
+    font-size: smaller;
+}
+
+#urlprotector .matched {
+    color: darkgreen;
+}
+
+#urlprotector .nomatch {
+    color: darkred;
+}
+
+#urlprotector .errormessages {
+    color: red;
+}
+#urlprotector td.actioncolumn {
+    text-align: center;
+    width: 90px;
+}
+
+#urlprotector td.resultcodecolumn {
+    width: 110px;
+}
+
+#urlprotector td.forcesslcolumn {
+    width: 80px;
+    text-align: center;
+}
+
+#urlprotector td {
+    border: thin solid #F3F4F5;
+    padding: 10px;
+}
+
+#urlprotector th {
+    background: #859A5D;
+    border: thin solid #F3F4F5;
+    color: white;
+    font-size: larger;
+    font-weight: bold;
+    padding: 10px;
+}
+
+#urlprotector form {
+    padding: 20px 0 80px;
+}
+
+#urlprotector table {
+    width: 100%;
+}
+
+#urlprotector #userinfo {
+    font-size: smaller;
+}
+
+#urlprotector #userinfo td {
+    padding: 5px;
+    border: none;
+}
+
+#urlprotector table#userinfo  {
+    padding-top: 30px;
+    width: auto;
+}
+
+#urlprotector #userinfo .currentagent {
+    padding-left: 30px;
+}
+
+
