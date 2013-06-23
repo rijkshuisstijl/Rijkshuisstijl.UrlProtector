@@ -1,28 +1,35 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using Orchard;
 using Orchard.Data;
 using Orchard.Logging;
+using Orchard.Mvc;
 using Orchard.Mvc.Filters;
+using Orchard.Themes;
 using Orchard.UI.Admin;
 using Rijkshuisstijl.UrlProtector.Models;
 using Rijkshuisstijl.UrlProtector.Services;
 
 namespace Rijkshuisstijl.UrlProtector.Filters {
+
     public class UrlFilter : FilterProvider, IActionFilter {
         private const int MaxFilteredRecordsInDatabase = 10;
         private readonly ICachedUrlProtectorRules _cachedUrlProtectorRules;
+        private readonly IOrchardServices _orchardServices;
         private readonly IRepository<FilteredRequestRecord> _filteredRequestRecords;
         private readonly IWorkContextAccessor _wca;
 
         public UrlFilter(IWorkContextAccessor wca,
                          IRepository<FilteredRequestRecord> filteredRequestRecords,
-                         ICachedUrlProtectorRules cachedUrlProtectorRules) {
+                         ICachedUrlProtectorRules cachedUrlProtectorRules,
+            IOrchardServices orchardServices) {
             _wca = wca;
             _filteredRequestRecords = filteredRequestRecords;
             _cachedUrlProtectorRules = cachedUrlProtectorRules;
+            _orchardServices = orchardServices;
             Logger = NullLogger.Instance;
             UserAgent = _wca.GetContext().HttpContext.Request.UserAgent;
             UserHostAddress = _wca.GetContext().HttpContext.Request.UserHostAddress;
@@ -102,7 +109,34 @@ namespace Rijkshuisstijl.UrlProtector.Filters {
                 //No access is granted for this request.
                 LogFilteredRequest();
 
-                filterContext.Result = urlFilterRecord.ReturnStatusNotFound ? (ActionResult) new HttpNotFoundResult() : new HttpUnauthorizedResult();
+                //filterContext.Result = urlFilterRecord.ReturnStatusNotFound ? (ActionResult) new HttpNotFoundResult() : new HttpUnauthorizedResult();
+                if (urlFilterRecord.ReturnStatusNotFound)
+                {
+                    var model = _orchardServices.New.NotFound();
+                    var request = filterContext.RequestContext.HttpContext.Request;
+                    var url = request.RawUrl;
+
+                    // If the url is relative then replace with Requested path
+                    model.RequestedUrl = request.Url != null && request.Url.OriginalString.Contains(url) & request.Url.OriginalString != url ?
+                        request.Url.OriginalString : url;
+
+                    // Dont get the user stuck in a 'retry loop' by
+                    // allowing the Referrer to be the same as the Request
+                    model.ReferrerUrl = request.UrlReferrer != null &&
+                        request.UrlReferrer.OriginalString != model.RequestedUrl ?
+                        request.UrlReferrer.OriginalString : null;
+
+                    filterContext.HttpContext.Items[typeof(ThemeFilter)] = null;
+                    filterContext.Result = new ShapeResult(filterContext.Controller, model);
+                    filterContext.RequestContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.NotFound;
+
+                    // prevent IIS 7.0 classic mode from handling the 404/500 itself
+                    filterContext.RequestContext.HttpContext.Response.TrySkipIisCustomErrors = true;
+                }
+                else {
+                    filterContext.Result = new HttpUnauthorizedResult();
+                }
+
                 return;
             }
         }

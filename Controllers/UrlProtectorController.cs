@@ -54,7 +54,7 @@ namespace Rijkshuisstijl.UrlProtector.Controllers {
             if (!_authorizer.Authorize(Permissions.ConfigureUrlProtector, T("Not authorized to manage settings"))) {
                 return new HttpUnauthorizedResult();
             }
-            var filter = new UrlFilter(_workContextAccessor,_filteredRequestRecords, _cachedUrlProtectorRules);
+            var filter = new UrlFilter(_workContextAccessor,_filteredRequestRecords, _cachedUrlProtectorRules, _orchardServices);
 
             var viewModel = new ShowViewModel(_cachedUrlProtectorRules.DashboardFilterRecords, _cachedUrlProtectorRules.UrlFilterRecords, _filteredRequestRecords.Table, filter.UserHostAddress, filter.UserAgent);
 

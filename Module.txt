@@ -2,8 +2,8 @@
 AntiForgery: enabled
 Author: CIBG
 Website: http://www.cibg.nl
-Version: 1.0
-OrchardVersion: 1.0
+Version: 1.1
+OrchardVersion: 1.6
 Category: Security
 Description: Protecs url patterns with source IP addresses and browsers user agent
 Features:
