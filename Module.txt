@@ -2,10 +2,10 @@
 AntiForgery: enabled
 Author: CIBG
 Website: http://www.cibg.nl
-Version: 1.2
+Version: 1.3
 OrchardVersion: 1.6
 Category: Security
 Description: Protecs url patterns with source IP addresses and browsers user agent
 Features:
     Rijkshuisstijl.UrlProtector:
-        Description: Protecs url patterns with source IP addresses and browsers user agent.
+        Description: You can prevent urls from being displayed by filtering source IP addresses and browsers user agent. You can deny access, hide, redirect or place the page in maintenance mode.

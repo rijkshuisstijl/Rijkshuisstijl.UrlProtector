@@ -1,35 +1,31 @@
-﻿
+﻿select.textMedium { width: 28em; }
+
+.metadata pre {
+    font-family: Consolas, monospace;
+    font-size: 11px;
+}
+
 #urlprotector .editor-label {
-    padding-top: 10px;
     font-size: small;
+    padding-top: 10px;
 }
 
-#urlprotector .matchcheck {
-    font-size: smaller;
-}
+#urlprotector .matchcheck { font-size: smaller; }
 
-#urlprotector .matched {
-    color: darkgreen;
-}
+#urlprotector .matched { color: darkgreen; }
 
-#urlprotector .nomatch {
-    color: darkred;
-}
+#urlprotector .nomatch { color: darkred; }
 
-#urlprotector .errormessages {
-    color: red;
-}
+#urlprotector .errormessages { color: red; }
+
 #urlprotector td.actioncolumn {
     text-align: center;
     width: 90px;
 }
 
-#urlprotector td.resultcodecolumn {
-    width: 110px;
-}
 
 #urlprotector td.forcesslcolumn {
-    width: 80px;
+    max-width: 80px;
     text-align: center;
 }
 
@@ -47,30 +43,21 @@
     padding: 10px;
 }
 
-#urlprotector form {
-    padding: 20px 0 80px;
-}
+#urlprotector form { padding: 20px 0 80px; }
 
-#urlprotector table {
-    width: 100%;
-}
+#urlprotector table { width: 100%; }
 
-#urlprotector #userinfo {
-    font-size: smaller;
-}
+#urlprotector #userinfo { font-size: smaller; }
 
 #urlprotector #userinfo td {
-    padding: 5px;
     border: none;
+    padding: 5px;
 }
 
-#urlprotector table#userinfo  {
+#urlprotector table#userinfo {
     padding-top: 30px;
     width: auto;
 }
 
-#urlprotector #userinfo .currentagent {
-    padding-left: 30px;
-}
-
+#urlprotector #userinfo .currentagent { padding-left: 30px; }
 

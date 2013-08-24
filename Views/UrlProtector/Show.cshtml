@@ -1,4 +1,5 @@
-﻿@using Rijkshuisstijl.UrlProtector.Models
+﻿@using Rijkshuisstijl.UrlProtector.Helpers
+@using Rijkshuisstijl.UrlProtector.Models
 @model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.ShowViewModel
 
 @{
@@ -7,9 +8,7 @@
 }
 
 <div id="urlprotector">      
-
     @{
-
         <table>
             <tr>
                 <th>
@@ -28,13 +27,14 @@
                     @T("Force SSL")
                 </th>
                 <th>
-                    @T("Result code")
+                    @T("Failure action")
                 </th>
                 <th>
-                    @T("Action")
+                    @T("Record action")
                 </th>
             </tr>
-            @foreach (DashboardFilterRecord dashboardFilterRecord in Model.DashboardFilterRecords) {
+            @foreach (DashboardFilterRecord dashboardFilterRecord in Model.DashboardFilterRecords)
+            {
                 <tr>
                     <td>
                         @T("Dashboard")
@@ -48,25 +48,29 @@
                             <span class="@userAgentmatch">@dashboardFilterRecord.UserAgentPattern</span>}
                     </td>
                     <td>
-                        Dashboard and authorisation protection
+                        Dashboard and authorization protection
                     </td>
                     <td class="forcesslcolumn">
                         @{
-                            if (dashboardFilterRecord.ForceSsl) {
+                            if (dashboardFilterRecord.ForceSsl)
+                            {
                                 <text>SSL</text>
                             }
-                            else {
+                            else
+                            {
                                 <text>-</text>
                             }
                         }
                     </td>
                     <td class="resultcodecolumn">
                         @{
-                            if (dashboardFilterRecord.ReturnStatusNotFound) {
-                                <text>404 Not Found</text>
+                            if (dashboardFilterRecord.ReturnStatusNotFound)
+                            {
+                                <text>Page not found</text>
                             }
-                            else {
-                                <text>403 Access Denied</text>
+                            else
+                            {
+                                <text>Access denied</text>
                             }
                         }
                     </td>
@@ -75,7 +79,8 @@
                     </td>
                 </tr>
             }
-            @foreach (UrlFilterRecord urlFilter in Model.UrlFilterRecords.OrderBy(r => r.UrlPriority)) {
+            @foreach (UrlFilterRecord urlFilter in Model.UrlFilterRecords.OrderBy(r => r.UrlPriority))
+            {
                 <tr>
                     <td>
                         @urlFilter.UrlPattern
@@ -93,22 +98,21 @@
                     </td>
                     <td class="forcesslcolumn">
                         @{
-                            if (urlFilter.ForceSsl) {
+                            if (urlFilter.ForceSsl)
+                            {
                                 <text>SSL</text>
                             }
-                            else {
+                            else
+                            {
                                 <text>-</text>
                             }
                         }
                     </td>
                     <td class="resultcodecolumn">
-                        @{
-                            if (urlFilter.ReturnStatusNotFound) {
-                                <text>404 Not Found</text>
-                            }
-                            else {
-                                <text>403 Access Denied</text>
-                            }
+                        @((EnumHelper.GetDescription((UrlFilterReturnActionsEnum) urlFilter.FailureAction)))
+                        @if ((UrlFilterReturnActionsEnum) urlFilter.FailureAction == UrlFilterReturnActionsEnum.Redirect)
+                        {
+                            <text> to @urlFilter.RedirectTo</text>
                         }
                     </td>
                     <td class="actioncolumn">
@@ -119,58 +123,19 @@
             }
         </table>
     }
-    @using (Html.BeginFormAntiForgeryPost("NewFilter")) {
+    @using (Html.BeginFormAntiForgeryPost("NewFilter"))
+    {
         <div>
             <button class="primaryAction" type="submit">@T("New filter")</button>
         </div>
     }
     
-    <h2>Most recent filtered requests</h2>
-    @{
-        if (Model.FilteredRequestRecords == null || !Model.FilteredRequestRecords.Any()) {
-            <text>@T("No requests are filtered yet.")</text>
-        }
-        else {
-            <table>
-                <tr>
-                    <th>
-                        @T("Request time")
-                    </th>
-                    <th>
-                        @T("Url")
-                    </th>
-                    <th>
-                        @T("User Host Address")
-                    </th>
-                    <th>
-                        @T("User Agent")
-                    </th>
-                </tr>
-                @foreach (FilteredRequestRecord filteredRequest in Model.FilteredRequestRecords.OrderByDescending(r => r.RequestTime)) {
-                    <tr>
-                        <td>
-                            @filteredRequest.RequestTime
-                        </td>
-                        <td>
-                            @filteredRequest.Url
-                        </td>
-                        <td>
-                            @filteredRequest.UserHostAddress
-                        </td>
-                        <td>
-                            @filteredRequest.UserAgent
-                        </td>
-                    </tr>
-                }
-            </table>
-        }
 
-        <!-- Show some info of the current user to see what is supplied to the webserver -->
-        <table id="userinfo">
-            <tr>
-                <td>@T("Current user host address:")</td><td>@Model.CurrentUserHostAddress</td>
-                <td class="currentagent">@T("Current user agent:")</td><td>@Model.CurrentUserAgent</td>
-            </tr>
-        </table>
-    }
+    <h2>Most recent filtered requests</h2>
+    @Html.CreateFilteredRequestTable(Model.FilteredRequestRecords, T)
+        
+
+    <!-- Show some info of the current user to see what is supplied to the webserver -->
+    @Html.CreateUserInfoTable(Model.CurrentUserHostAddress, Model.CurrentUserAgent, T)
+    
 </div>

@@ -1,5 +1,9 @@
-﻿@model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.EditUrlViewModel
+﻿@using System.Globalization
+@using Rijkshuisstijl.UrlProtector.Helpers
+@using Rijkshuisstijl.UrlProtector.Models
+@model Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector.EditUrlViewModel
 @{
+    Script.Require("jQuery");
     Style.Include("urlprotector");
     Layout.Title = T("Edit Url filter");
 }
@@ -9,12 +13,13 @@
         @Html.ValidationSummary()
     </div>
 
-    @using (Html.BeginFormAntiForgeryPost("Edit")) {
+    @using (Html.BeginFormAntiForgeryPost("Edit"))
+    {
         @Html.HiddenFor(m => m.UrlFilterRecord.Id)
 
         @Html.Label(T("Regex expression of the url to validate, ex '^/subject1'").Text, new {@class = "editor-label"})
         @Html.TextBoxFor(m => m.UrlFilterRecord.UrlPattern, new {@class = "textMedium"})
-       
+
         @Html.Label(T("Priority of url pattern, only the highest priority match will be used (1=highest)").Text, new {@class = "editor-label"})
         @Html.TextBoxFor(m => m.UrlFilterRecord.UrlPriority, new {@class = "textMedium"})
 
@@ -23,13 +28,42 @@
 
         @Html.Label(T("Regex expression of accepted useragent, ex 'my value'").Text, new {@class = "editor-label"})
         @Html.TextBoxFor(m => m.UrlFilterRecord.UserAgentPattern, new {@class = "textMedium"})
-        
+
+                @*
         @Html.Label(T("Force SSL").Text, new {@class = "editor-label"})
         @Html.CheckBoxFor(m => m.UrlFilterRecord.ForceSsl)
+        *@
 
-        @Html.Label(T("Return http statuscode '404, not found' instead of '403, access denied'").Text, new {@class = "editor-label"})
-        @Html.CheckBoxFor(m => m.UrlFilterRecord.ReturnStatusNotFound)
 
+        List<SelectListItem> actionItems = new List<SelectListItem>();
+        foreach (int id in Enum.GetValues(typeof (UrlFilterReturnActionsEnum)))
+        {
+            actionItems.Add(new SelectListItem()
+            {
+                Value = id.ToString(CultureInfo.InvariantCulture),
+                Text = EnumHelper.GetDescription((UrlFilterReturnActionsEnum) id),
+                Selected = id == Model.UrlFilterRecord.FailureAction
+            });
+        }
+        SelectList selectListOfActions = new SelectList(actionItems, "Value", "Text", Model.UrlFilterRecord.FailureAction.ToString(CultureInfo.InvariantCulture));
+
+
+        @Html.Label(T("Failure Action").Text, new {@class = "editor-label"})
+
+        @Html.DropDownListFor(m => m.UrlFilterRecord.FailureAction, selectListOfActions, new {@class = "textMedium"})
+
+        @*    
+        @Html.Label(T("Failure Action").Text, new {@class = "editor-label"})
+        @Html.TextBoxFor(m => m.UrlFilterRecord.FailureAction, new {@class = "textMedium"})
+        <span class="hint">@T("The action to take if the useragent or hostaddress does not match the pattern")</span>
+        *@
+
+        <div id="redirect-part">
+            @Html.Label(T("Redirect to").Text, new {@class = "editor-label"})
+            @Html.TextBoxFor(m => m.UrlFilterRecord.RedirectTo, new {@class = "textMedium"})
+            <span class="hint">@T("Used if 'Redirect' failure action is selected. Ex. '/onderwerp-1' or 'http://otherwebiste.com'")</span>
+        </div>
+        
         @Html.Label(T("Description").Text, new {@class = "editor-label"})
         @Html.TextAreaFor(m => m.UrlFilterRecord.Description, new {@class = "textMedium"})
 
@@ -40,3 +74,41 @@
         </fieldset>
     }
 </div>
+
+<br/><br/>
+<div class="metadata">
+    <pre>
+Some examples of regex expressions
+^(1)    : starts with (1)
+(1)$    : ends with (1)
+(1)|(2) : contains (1) or (2)
+(1)     : contains (1)
+!(1)    : does not contains (1)
+.*      : zero or more characters
+</pre>
+</div>
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+            //<![CDATA[
+        $(document).ready(function() {
+            var redirectValue = 4;
+            var redirectPart = $("#redirect-part");
+            var actionDropdownBox = $("#UrlFilterRecord_FailureAction");
+            
+            if (actionDropdownBox.val() != redirectValue) {
+                redirectPart.hide();
+            }
+
+            actionDropdownBox.change(function() {
+                if (actionDropdownBox.val() != redirectValue) {
+                    redirectPart.hide();
+                } else {
+                    redirectPart.show();
+                }
+            });
+        });
+    //]]> 
+    </script>
+}

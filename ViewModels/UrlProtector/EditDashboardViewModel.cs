@@ -1,7 +1,13 @@
-﻿using Rijkshuisstijl.UrlProtector.Models;
+﻿#region
 
-namespace Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector {
-    public class EditDashboardViewModel {
+using Rijkshuisstijl.UrlProtector.Models;
+
+#endregion
+
+namespace Rijkshuisstijl.UrlProtector.ViewModels.UrlProtector
+{
+    public class EditDashboardViewModel
+    {
         public DashboardFilterRecord DashboardFilterRecord { get; set; }
     }
 }

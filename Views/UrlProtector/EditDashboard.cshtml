@@ -9,7 +9,8 @@
         @Html.ValidationSummary()
     </div>
 
-    @using (Html.BeginFormAntiForgeryPost("EditDashboard")) {
+    @using (Html.BeginFormAntiForgeryPost("EditDashboard"))
+    {
         @Html.HiddenFor(m => m.DashboardFilterRecord.Id)
 
         @Html.Label(T(@"Regex expression of accepted user host address, ex '(^<ip address>$|^<ip address>$)'").Text, new {@class = "editor-label"})
@@ -20,15 +21,26 @@
 
         @Html.Label(T("Force SSL").Text, new {@class = "editor-label"})
         @Html.CheckBoxFor(m => m.DashboardFilterRecord.ForceSsl)
-        
-        @Html.Label(T("Return http statuscode '404, not found' instead of '403, access denied'").Text, new {@class = "editor-label"})
+
+        @Html.Label(T("Return 'Page not found' instead of 'Access denied'").Text, new {@class = "editor-label"})
         @Html.CheckBoxFor(m => m.DashboardFilterRecord.ReturnStatusNotFound)
 
-        
-        
         <fieldset>
             <legend></legend>
             <button class="primaryAction" type="submit">@T("Save")</button>
         </fieldset>
     }
+</div>
+
+<br/><br/>
+<div class="metadata">
+    <pre>
+Some examples of regex expressions
+^(1)    : starts with (1)
+(1)$    : ends with (1)
+(1)|(2) : contains (1) or (2)
+(1)     : contains (1)
+!(1)    : does not contains (1)
+.*      : zero or more characters
+</pre>
 </div>

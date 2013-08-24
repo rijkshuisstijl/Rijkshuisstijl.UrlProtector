@@ -93,8 +93,10 @@
     <Compile Include="AdminMenu.cs" />
     <Compile Include="Controllers\UrlProtectorController.cs" />
     <Compile Include="Filters\UrlFilter.cs" />
+    <Compile Include="Helpers\UrlProtectorHtmlHelper.cs" />
     <Compile Include="Migrations.cs" />
     <Compile Include="Models\DashBoardFilterRecord.cs" />
+    <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Models\FilteredRequestRecord.cs" />
     <Compile Include="Models\UrlFilterRecord.cs" />
     <Compile Include="Permissions.cs" />
@@ -105,12 +107,16 @@
     <Compile Include="ViewModels\UrlProtector\EditDashboardViewModel.cs" />
     <Compile Include="ViewModels\UrlProtector\EditUrlViewModel.cs" />
     <Compile Include="ViewModels\UrlProtector\ShowViewModel.cs" />
+    <Compile Include="Models\UrlFilterReturnActionsEnum.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\UrlProtector\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\UrlProtector\EditDashboard.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Maintenance.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
