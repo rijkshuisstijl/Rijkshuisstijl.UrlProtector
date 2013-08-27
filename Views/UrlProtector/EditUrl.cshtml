@@ -29,10 +29,8 @@
         @Html.Label(T("Regex expression of accepted useragent, ex 'my value'").Text, new {@class = "editor-label"})
         @Html.TextBoxFor(m => m.UrlFilterRecord.UserAgentPattern, new {@class = "textMedium"})
 
-                @*
         @Html.Label(T("Force SSL").Text, new {@class = "editor-label"})
         @Html.CheckBoxFor(m => m.UrlFilterRecord.ForceSsl)
-        *@
 
 
         List<SelectListItem> actionItems = new List<SelectListItem>();
